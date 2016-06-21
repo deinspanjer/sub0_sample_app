@@ -1,0 +1,55 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432"
+    environment:
+      # - POSTGRES_USER=authenticator
+      # - POSTGRES_PASSWORD=authenticator
+      - POSTGRES_DB=app
+    volumes:
+      - "./sql:/docker-entrypoint-initdb.d"
+  postgrest:
+    image: sub0/postgrest
+    ports:
+      - "3000:3000"
+    links:
+      - db:db
+    environment:
+      - dummy=true
+      # - POSTGREST_SCHEMA=api
+      # - POSTGREST_ANONYMOUS=anonymous
+      - POSTGREST_JWT_SECRET=secret
+      # - POSTGREST_MAX_ROWS=null
+      # - POSTGREST_POOL=200
+      # - POSTGREST_DB_USER=authenticator
+      # - POSTGREST_DB_PASS=authenticator
+      # - POSTGREST_DB_HOST=db
+      # - POSTGREST_DB_PORT=5432
+      # - POSTGREST_DB_NAME=app
+
+  openresty:
+    image: sub0/openresty
+    ports:
+      - "8080:80"
+    links:
+      - db:db
+      - postgrest:postgrest
+    environment:
+      - dummy=true
+      # - DEVELOPMENT=1
+      - CACHE_BYPASS=0
+      # - POSTGREST_HOST=postgrest
+      # - POSTGREST_PORT=3000
+      # - DB_SCHEMA=api
+      # - DB_HOST=db
+      # - DB_PORT=5432
+      # - DB_NAME=app
+      # - DB_USER=authenticator
+      # - DB_PASS=authenticator
+
+
+
+
+
