@@ -2,8 +2,8 @@ version: '2'
 services:
   db:
     image: postgres
-    ports:
-      - "5432"
+    # ports:
+    #   - "5432"
     environment:
       # - POSTGRES_USER=authenticator
       # - POSTGRES_PASSWORD=authenticator
@@ -12,8 +12,8 @@ services:
       - "./sql:/docker-entrypoint-initdb.d"
   postgrest:
     image: sub0/postgrest
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     links:
       - db:db
     environment:
@@ -39,6 +39,7 @@ services:
     environment:
       - dummy=true
       # - DEVELOPMENT=1
+      # - CACHE_BYPASS=1
       - CACHE_BYPASS=0
       # - POSTGREST_HOST=postgrest
       # - POSTGREST_PORT=3000
@@ -48,6 +49,8 @@ services:
       # - DB_NAME=app
       # - DB_USER=authenticator
       # - DB_PASS=authenticator
+    volumes:
+      - "./user_module.lua:/usr/local/openresty/lualib/user_module.lua"
 
 
 
